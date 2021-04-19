@@ -29,12 +29,12 @@ class LoginController  with NavigatorManager, KeyboardManager  implements Contro
 
   void setValueEmail(String value) {
     _email = value;
-    _enabladButtton();
+    _enabledButton();
   }
 
   void setValuePassword(String value) {
     _password = value;
-    _enabladButtton();
+    _enabledButton();
   }
 
   void onValidate(context) {
@@ -56,7 +56,7 @@ class LoginController  with NavigatorManager, KeyboardManager  implements Contro
     hideKeyboard(context);
   }
 
-  void _enabladButtton() {
+  void _enabledButton() {
     if (_email != null && _password != null) {
     if (FormsValidators.email(_email) != null &&
        FormsValidators.password(_password) != null) {

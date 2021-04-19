@@ -26,12 +26,12 @@ class RegisterController  with NavigatorManager, KeyboardManager  implements Con
 
   void setValueEmail(String value) {
     _email = value;
-    _enabladButtton();
+    _enabledButton();
   }
 
   void setValuePassword(String value) {
     _password = value;
-    _enabladButtton();
+    _enabledButton();
   }
 
   void onValidate(context) {
@@ -53,7 +53,7 @@ class RegisterController  with NavigatorManager, KeyboardManager  implements Con
     hideKeyboard(context);
   }
 
-  void _enabladButtton() {
+  void _enabledButton() {
     if (_email != null && _password != null) {
     if (FormsValidators.email(_email) != null &&
         FormsValidators.password(_password) != null) {

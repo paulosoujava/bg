@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gb_app/ui/themes/app_theme.dart';
 
 mixin ABInput {
   //ATOM
@@ -9,14 +10,14 @@ mixin ABInput {
       obscureText: obscureText,
        onChanged: onChanged,
       decoration:  InputDecoration(
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.amberAccent, width: 1.0),
+        focusedBorder:  OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.lightGreen, width: 2.0),
         ),
-        enabledBorder: const OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.black87, width: 1.0),
+        enabledBorder:  OutlineInputBorder(
+          borderSide:  BorderSide(color: Colors.grey, width: 1.0),
         ),
         errorBorder: const OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.red, width: 1.0),
+          borderSide: const BorderSide(color: Colors.red, width: 2.0),
         ),
         hintText: hintText,
       ),

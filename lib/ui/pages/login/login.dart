@@ -24,13 +24,17 @@ class _LoginPageState extends State<Login> {
       inputs: [
         ARInput.input(
           "digite seu email",
-          controller.setValueEmail,
+              (value) {
+            controller.setValue(value, Types.EMAIL);
+          },
           keyboardType: TextInputType.emailAddress,
         ),
         ARSpace.spaceH20(),
         ARInput.input(
           "digite sua senha",
-          controller.setValuePassword,
+              (value) {
+            controller.setValue(value, Types.PASSWORD);
+          },
           keyboardType: TextInputType.number,
           obscureText: true,
         ),

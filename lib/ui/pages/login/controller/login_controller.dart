@@ -8,9 +8,7 @@ import '../../../../ui/validators/validators.dart';
 
 import '../../../../ui/organism/mixins/mixins.dart';
 
-
-
-class LoginController  with NavigatorManager, KeyboardManager  implements Controller{
+class LoginController  with NavigatorManager, KeyboardManager  implements Controller {
   final enabledButtonNotifer = ValueNotifier<bool>(false);
   final showLoad = ValueNotifier<bool>(false);
   final showError = ValueNotifier<bool>(false);
@@ -23,19 +21,8 @@ class LoginController  with NavigatorManager, KeyboardManager  implements Contro
 
   bool get isError => showError.value;
 
-
   String _email;
   String _password;
-
-  void setValueEmail(String value) {
-    _email = value;
-    _enabledButton();
-  }
-
-  void setValuePassword(String value) {
-    _password = value;
-    _enabledButton();
-  }
 
   void onValidate(context) {
     closeKeyboard(context);
@@ -58,22 +45,39 @@ class LoginController  with NavigatorManager, KeyboardManager  implements Contro
 
   void _enabledButton() {
     if (_email != null && _password != null) {
-    if (FormsValidators.email(_email) != null &&
-       FormsValidators.password(_password) != null) {
-    enabledButtonNotifer.value = (_email.isNotEmpty && _password.isNotEmpty);
+      if (FormsValidators.email(_email) != null &&
+          FormsValidators.password(_password) != null) {
+        enabledButtonNotifer.value =
+            (_email.isNotEmpty && _password.isNotEmpty);
+      }
     }
-    }
-
-
-    }
+  }
 
   void backNormal() {
     showError.value = false;
   }
 
+  @override
   void dispose() {
     showError.dispose();
     enabledButtonNotifer.dispose();
     showLoad.dispose();
+  }
+
+  @override
+  void setValue(String value, Types type) {
+    switch (type) {
+      case Types.EMAIL:
+        _email = value;
+        break;
+      case Types.PASSWORD:
+        _email = value;
+        break;
+    }
+    if (_email != null && _password != null) {
+      _enabledButton();
+      //SE DEU CERTO CHAMA O DISPOSED
+      dispose();
+    }
   }
 }

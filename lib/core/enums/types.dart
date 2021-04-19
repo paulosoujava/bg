@@ -1,0 +1,3 @@
+enum Types{
+  EMAIL, PASSWORD, REPASSWORD
+}

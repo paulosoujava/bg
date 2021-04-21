@@ -12,7 +12,7 @@
  com o valueNotification, não vi a necessidade de utilizar um gerenciador de estado, estamos falando do flutter 
  e por se tratar de INUMERAS mudanças QUANTO MENOS dependecias MELHOR.
  
- 
+ YOUTUBE: https://www.youtube.com/watch?v=Ll7BXbEywRg
  
 
 <img src="https://miro.medium.com/max/2625/1*V5oi-JrH4RlEQuYdVrQXig.png" width="648">

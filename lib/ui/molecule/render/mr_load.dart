@@ -7,13 +7,11 @@ class MRLoad {
           {pt1 = "Por\n", pt2 = "\t\t\tFavor", pt3 = "\nAguarde.."}) =>
       MBLoad.buildLoad(context, pt1, pt2, pt3);
 
-  static Widget loadError(
-    BuildContext context, {
-    @required label,
-    @required onPress,
-    pt1 = "Ops\n",
-    pt2 = "\t\t\tValide",
-    pt3 = "\nos campos..",
+  static Widget loadError({
+    @required headertitle,
+    @required footerTitle,
+    @required errorMessage,
+    @required onTap,
   }) =>
-      MBLoad.buildLoadError(context, pt1, pt2, pt3, label, onPress);
+      MBLoad.buildLoadError(headertitle, errorMessage, footerTitle, onTap);
 }

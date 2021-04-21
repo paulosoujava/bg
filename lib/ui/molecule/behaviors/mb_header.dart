@@ -3,10 +3,10 @@ import 'package:gb_app/ui/atom/atom.dart';
 
 mixin MBHeader{
 
-  static Widget buildHeader(context, path){
+  static Widget buildHeader(context, path, double height, double width){
     return  Container(
-      height: 290,
-      width: double.infinity,
+      height: height,
+      width: width,
       margin: EdgeInsets.only(bottom: 32),
       decoration: BoxDecoration(
           gradient: LinearGradient(

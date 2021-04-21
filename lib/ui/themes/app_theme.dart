@@ -15,6 +15,7 @@ ThemeData makeAppTheme() {
       color: primaryColorDark
     )
   );
+
   final inputDecorationTheme = InputDecorationTheme(
     enabledBorder: UnderlineInputBorder(
       borderSide: BorderSide(color: primaryColorLight)
@@ -24,6 +25,7 @@ ThemeData makeAppTheme() {
     ),
     alignLabelWithHint: true
   );
+
   final buttonTheme = ButtonThemeData(
     colorScheme: ColorScheme.light(primary: primaryColor),
     buttonColor: primaryColor,

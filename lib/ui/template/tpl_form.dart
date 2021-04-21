@@ -1,15 +1,28 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:gb_app/ui/atom/atom.dart';
-import 'package:gb_app/ui/molecule/molecule.dart';
-import 'package:gb_app/ui/organism/organism.dart';
-import 'package:gb_app/ui/themes/app_theme.dart';
 
-class TPLDefault extends StatelessWidget {
-  final Widget mrButton;
-  final List<Widget> children;
-  final List<Widget> childrenColumn;
+import 'package:gb_app/ui/ui.dart';
 
-  const TPLDefault({Key key, this.mrButton, this.children, this.childrenColumn})
+class TPLForm extends StatelessWidget {
+  final List<Widget> actions;
+  final Function hiddeError;
+  final Widget organism;
+  final ValueListenable<bool> load;
+  final ValueListenable<bool> error;
+  final String errorMessage;
+  final String footerTitle;
+  final String headertitle;
+
+  const TPLForm(
+      {Key key,
+      this.organism,
+      this.actions,
+      this.load,
+      this.error,
+      this.errorMessage,
+      this.footerTitle,
+      this.hiddeError,
+      this.headertitle = "Ops, encontrei este(s) error(s):"})
       : super(key: key);
 
   @override
@@ -17,7 +30,6 @@ class TPLDefault extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: makeAppTheme().primaryColorDark,
-      floatingActionButton: mrButton,
       body: Stack(
         children: [
           Align(
@@ -30,13 +42,13 @@ class TPLDefault extends StatelessWidget {
                     child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: children),
+                        children: actions),
                   ))),
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
                 width: size.width,
-                height: size.height * 0.87,
+                height: size.height * 0.85,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -47,13 +59,28 @@ class TPLDefault extends StatelessWidget {
                     child: Padding(
                       padding:
                           const EdgeInsets.only(top: 40, left: 32, right: 32),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: childrenColumn,
+                      child: SingleChildScrollView(
+                        child: organism,
                       ),
                     ),
                   ),
                 )),
+          ),
+          ValueListenableBuilder<bool>(
+              valueListenable: load,
+              builder: (_, enabled, __) =>
+                  enabled ? MRLoad.load(context) : Container()),
+          GestureDetector(
+            onTap: () => hiddeError,
+            child: ValueListenableBuilder<bool>(
+                valueListenable: error,
+                builder: (_, enabled, __) => enabled
+                    ? MRLoad.loadError(
+                        errorMessage: errorMessage,
+                        footerTitle: footerTitle,
+                        onTap: hiddeError,
+                        headertitle: headertitle)
+                    : Container()),
           ),
         ],
       ),

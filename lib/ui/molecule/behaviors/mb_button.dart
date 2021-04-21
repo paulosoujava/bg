@@ -22,4 +22,9 @@ mixin MBButton{
         ),
       );
   }
+  static buildFloat(onPressed, child, color) =>FloatingActionButton(
+    onPressed: onPressed,
+    child:child,
+    backgroundColor: color,
+  );
 }

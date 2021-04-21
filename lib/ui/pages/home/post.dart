@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
-mixin Post{
-  Future<void> showMyDialog(context) async {
+import '../../../ui/ui.dart';
+
+mixin Post {
+  Future<void> showMyDialog(context, controller, {int indice = -1}) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -11,21 +13,39 @@ mixin Post{
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                TextField(
-                  maxLines: null,
-                  maxLength: 148,
-                  keyboardType: TextInputType.multiline,
-                )
+                ARInput.input(
+                  "manda ver...",
+                  edtController: controller.postText,
+                  maxLines: 10,
+                  maxLength:240
+                ),
               ],
             ),
           ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Postar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+          actions:[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: 120,
+                  child: Visibility(child:MRButton.link( "deletar", () {
+                      indice == -1 ? controller.postThis() : controller.delete(indice);
+                      Navigator.of(context).pop();
+                    }, w: 120),
+                    visible: indice != -1,),
+                ),
+                Container(
+                  width: 90,
+                  child: MRButton.link(indice == -1 ? "postar" : "editar", () {
+                      indice == -1 ? controller.postThis() : controller.edit(indice);
+                      Navigator.of(context).pop();
+                    }, w: 90),
+                ),
+
+              ],
             ),
+
           ],
         );
       },

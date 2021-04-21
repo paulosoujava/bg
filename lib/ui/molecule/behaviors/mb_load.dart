@@ -28,24 +28,30 @@ mixin MBLoad {
     );
   }
 
-  static Widget buildLoadError(context, pt1, pt2, pt3, label, onPress) {
-    return Container(
-      color: Colors.black87,
-      height: double.infinity,
-      width: double.infinity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-            child: Container(
-              height: 145,
-              width: 145,
-              child: ARImage.fullImageAssetFill("angry".png()),
+  static Widget buildLoadError(headerTitle, errorMessage, footerTitle, onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        color: Colors.black87,
+        height: double.infinity,
+        width: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+              child: Container(
+                height: 155,
+                width: 145,
+                child: ARImage.fullImageAssetFill("angry".png()),
+              ),
             ),
-          ),
-          ARText.customText(context, pt1, pt2, pt3),
-          MRButton.link(label, onPress, color:  Colors.white)
-        ],
+            ARText.title(headerTitle),
+            ARSpace.spaceH20(),
+            ARText.subtitle(errorMessage),
+            ARSpace.spaceH20(),
+            ARText.title(footerTitle),
+          ],
+        ),
       ),
     );
   }

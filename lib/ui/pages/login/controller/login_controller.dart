@@ -1,21 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
+import '../../../../storage/storage.dart';
 import '../../../../core/core.dart';
+import '../../../../ui/ui.dart';
 
-import '../../../../ui/organism/organism.dart';
-
-import '../../../../ui/validators/validators.dart';
-
-import '../../../../ui/organism/mixins/mixins.dart';
-
-class LoginController  with NavigatorManager, KeyboardManager  implements Controller {
-  final enabledButtonNotifer = ValueNotifier<bool>(false);
+class LoginController
+    with NavigatorManager, KeyboardManager
+    implements Controller {
+  final showButton = ValueNotifier<bool>(false);
   final showLoad = ValueNotifier<bool>(false);
   final showError = ValueNotifier<bool>(false);
 
-  bool get enabledButton => enabledButtonNotifer.value;
-
-  set enabledButton(bool value) => enabledButtonNotifer.value = value;
+  bool get isShowButton => showButton.value;
 
   bool get isShowLoad => showLoad.value;
 
@@ -24,60 +22,72 @@ class LoginController  with NavigatorManager, KeyboardManager  implements Contro
   String _email;
   String _password;
 
-  void onValidate(context) {
-    closeKeyboard(context);
-    if (FormsValidators.email(_email) == null &&
-        FormsValidators.password(_password) == null) {
-      showLoad.value = true;
-      dispose();
+  String error;
+
+  @override
+  void setValue(String value, Types type) {
+    if (type == Types.EMAIL) {
+      _email = value;
     } else {
+      _password = value;
+    }
+    showButton.value = (_email != null && _password != null);
+  }
+
+  void validate(context) async {
+    if (_showErrors().isNotEmpty) {
+      closeKeyboard(context);
       showError.value = true;
+    } else {
+      closeKeyboard(context);
+      _hasUser(context);
     }
   }
 
   void goTo(BuildContext context, {bool home = false}) {
-    redirect(context, home ? Pages.HOME : Pages.REGISTER);
+    redirect(context, home ? Pages.HOME : Pages.REGISTER, replace: home);
   }
 
   void closeKeyboard(context) {
     hideKeyboard(context);
   }
 
-  void _enabledButton() {
-    if (_email != null && _password != null) {
-      if (FormsValidators.email(_email) != null &&
-          FormsValidators.password(_password) != null) {
-        enabledButtonNotifer.value =
-            (_email.isNotEmpty && _password.isNotEmpty);
-      }
-    }
-  }
-
-  void backNormal() {
+  void hiddeError() {
     showError.value = false;
   }
 
-  @override
   void dispose() {
     showError.dispose();
-    enabledButtonNotifer.dispose();
+    showButton.dispose();
     showLoad.dispose();
   }
 
-  @override
-  void setValue(String value, Types type) {
-    switch (type) {
-      case Types.EMAIL:
-        _email = value;
-        break;
-      case Types.PASSWORD:
-        _email = value;
-        break;
+  //*************************
+  // PRIVATE METHODS
+  //*****
+  String _showErrors() {
+    String e = FormsValidators.email(_email);
+    String e1 = FormsValidators.password(_password);
+    error = (e.isEmpty && e1.isEmpty) ? "" : "Credenciais inválidas";
+       return error;
+  }
+
+  void _hasUser(context) async {
+    final profile = await Storage.load(KEY_PROFILE);
+    if(profile != null ){
+      if(json.decode(profile)['email'] == _email && json.decode(profile)['password'] ==_password){
+        _setToken(context);
+        return;
+      }
     }
-    if (_email != null && _password != null) {
-      _enabledButton();
-      //SE DEU CERTO CHAMA O DISPOSED
-      dispose();
-    }
+      error = "usuário não encontrado";
+      showError.value = true;
+  }
+
+  void _setToken(context) async {
+    showLoad.value = true;
+    Storage.save(KEY_LOGGED, "LOGGED");
+    Future.delayed(Duration(seconds: 3));
+    goTo(context, home: true);
   }
 }

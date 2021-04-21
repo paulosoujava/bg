@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gb_app/ui/atom/atom.dart';
 
 import '../molecule.dart';
 
@@ -19,4 +20,8 @@ class MRButton {
 
   static Widget disableLink(String label, {double h = H, double w = W, Color color = Colors.black}) =>
       MBButton.buildLink(h, w, label, null, color);
+
+  static Widget editFLoat(onPressed, { color = Colors.blueAccent}) => MBButton.buildFloat(onPressed, ARIcon.iconEdit(), color);
+
+  static Widget backFLoat(onPressed, { color = Colors.lightGreenAccent}) => MBButton.buildFloat(onPressed, ARIcon.iconBack(), color);
 }

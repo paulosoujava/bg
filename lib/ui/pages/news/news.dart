@@ -1,40 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:gb_app/ui/molecule/molecule.dart';
-import 'package:gb_app/ui/organism/organism.dart';
 
-import 'package:gb_app/ui/pages/home/controller/home_controller.dart';
+import '../../../ui/ui.dart';
+import './controller/news_controller.dart';
 
-import './post.dart';
-
-class Home extends StatefulWidget with Post {
-  const Home();
+class News extends StatefulWidget {
+  const News();
 
   @override
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
-  final _controller = HomeController();
+class _HomeState extends State<News> {
+  final _controller = NewsController();
 
   @override
   Widget build(BuildContext context) {
-    _controller.get();
+    _controller.fetch();
 
     return SafeArea(
-        child: ValueListenableBuilder<bool>(
-            valueListenable: _controller.showLoad,
-            builder: (_, enabled, __) => enabled
-                ? MRLoad.load(context)
-                : ListView.builder(
-                    itemCount: _controller.gb.news.length ?? 0,
-                    itemBuilder: (context, index) {
-                      return OCard(
-                        name: _controller.gb.news[index].user.name,
-                        content: _controller.gb.news[index].message.content,
-                        profilePicture: _controller.gb.news[index].user.profilePicture,
-                        createdAt: _controller.gb.news[index].message.createdAt,
-                      );
-                    },
-                  )));
+      child: Scaffold(
+        floatingActionButton:  MRButton.backFLoat(()=>_controller.goBack(context)),
+         body: ValueListenableBuilder<bool>(
+          valueListenable: _controller.showLoad,
+          builder: (_, enabled, __) => enabled
+              ? MRLoad.load(context)
+              : ListView.builder(
+                  itemCount: _controller.gb == null  ||  _controller.gb.news == null? 0 :_controller.gb.news.length,
+                  itemBuilder: (context, index) {
+                    return OCard(
+                      name: _controller.gb.news[index].user.name,
+                      content: _controller.gb.news[index].message.content,
+                      profilePicture:
+                          _controller.gb.news[index].user.profilePicture,
+                      createdAt: _controller.gb.news[index].message.createdAt,
+                    );
+                  },
+                ),
+        ),
+      ),
+    );
   }
 }

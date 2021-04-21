@@ -1,95 +1,105 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+
+import 'package:gb_app/model/profile.dart';
+import 'package:gb_app/storage/storage.dart';
 import '../../../../core/core.dart';
+import '../../../../ui/ui.dart';
 
-import '../../../../ui/organism/organism.dart';
 
-import '../../../../ui/validators/validators.dart';
-
-import '../../../../ui/organism/mixins/mixins.dart';
-
-class RegisterController  with NavigatorManager, KeyboardManager  implements Controller {
-  final enabledButtonNotifer = ValueNotifier<bool>(false);
+class RegisterController
+    with NavigatorManager, KeyboardManager
+    implements Controller {
+  final showButton = ValueNotifier<bool>(false);
   final showLoad = ValueNotifier<bool>(false);
   final showError = ValueNotifier<bool>(false);
 
-  bool get enabledButton => enabledButtonNotifer.value;
-
-  set enabledButton(bool value) => enabledButtonNotifer.value = value;
-
+  bool get isShowButton => showButton.value;
   bool get isShowLoad => showLoad.value;
-
   bool get isError => showError.value;
 
   String _email;
   String _password;
   String _repPassword;
+  String _name;
 
   String error;
 
-  void setValueEmail(String value) {
-    _email = value;
-    _enabledButton();
+  @override
+  void setValue(String value, Types type) {
+    switch (type) {
+      case Types.NAME:
+        _name = value;
+        break;
+      case Types.EMAIL:
+        _email = value;
+        break;
+      case Types.PASSWORD:
+        _password = value;
+        break;
+      case Types.REPASSWORD:
+        _repPassword = value;
+        break;
+    }
+    showButton.value = (_email != null &&
+        _password != null &&
+        _repPassword != null &&
+        _name != null);
   }
 
-  void onValidate(context) {
-    closeKeyboard(context);
-    if (FormsValidators.email(_email) == null &&
-        FormsValidators.password(_password) == null) {
-      showLoad.value = true;
-      dispose();
-    } else {
+  void validate(context) async {
+    if (_showErrors().isNotEmpty) {
+      closeKeyboard(context);
       showError.value = true;
+    } else {
+      closeKeyboard(context);
+      _saveProfile(context);
     }
   }
 
   void goTo(BuildContext context, {bool home = false}) {
-    redirect(context, home ? Pages.HOME : Pages.REGISTER);
+    redirect(context, home ? Pages.HOME : Pages.LOGIN, replace: home);
   }
 
   void closeKeyboard(context) {
     hideKeyboard(context);
   }
 
-  void _enabledButton() {
-    if (_email != null) {
-      error = FormsValidators.email(_email);
-    } else if (_password != null) {
-      error = FormsValidators.password(_password);
-    } else if (_repPassword != null) {
-      error = FormsValidators.repPassword(_password, _repPassword);
-    }
-
-    if (error == null)
-      enabledButtonNotifer.value = (_email.isNotEmpty && _password.isNotEmpty);
-  }
-
-  void backNormal() {
+  void hiddeError() {
     showError.value = false;
   }
 
   void dispose() {
     showError.dispose();
-    enabledButtonNotifer.dispose();
+    showButton.dispose();
     showLoad.dispose();
   }
 
-  @override
-  void setValue(String value, Types type) {
-    switch (type) {
-      case Types.EMAIL:
-        _email = value;
-        break;
-      case Types.PASSWORD:
-        _email = value;
-        break;
-      case Types.REPASSWORD:
-        _email = value;
-        break;
-    }
-    if (_email != null && _password != null && _repPassword != null) {
-      _enabledButton();
-      //SE DEU CERTO CHAMA O DISPOSED
-      dispose();
-    }
+  //*************************
+  // PRIVATE METHODS
+  //*****
+  String _showErrors() {
+    String e = FormsValidators.email(_email);
+    e = e.isNotEmpty ? "$e\n" : "";
+    String e1 = FormsValidators.password(_password);
+    e1 = e1.isNotEmpty ? "$e1\n" : "";
+    String e2 = FormsValidators.repPassword(_password, _repPassword);
+    e2 = e2.isNotEmpty ? "$e2\n" : "";
+    String e3 = FormsValidators.name(_name);
+    e3 = e3.isNotEmpty ? "$e3\n" : "";
+    error = (e.isEmpty && e1.isEmpty && e2.isEmpty && e3.isEmpty)
+        ? ""
+        : "$e $e1 $e2 $e3";
+    print(error);
+    return error;
+  }
+
+  void _saveProfile(context) async {
+    Profile p = Profile(name: _name, email: _email, password: _password);
+    showLoad.value = true;
+    Storage.save(KEY_PROFILE, json.encode(p));
+    Storage.save(KEY_LOGGED, "LOGGED");
+    goTo(context, home: true);
   }
 }

@@ -1,181 +1,75 @@
 import 'package:flutter/material.dart';
-import 'package:gb_app/ui/atom/render/ar_space.dart';
-import 'package:gb_app/ui/atom/render/ar_text.dart';
 
+import 'package:gb_app/mock/dumb.dart';
+import '../../../ui/ui.dart';
+import 'controller/home_controller.dart';
 import './post.dart';
-import '../../../ui/themes/app_theme.dart';
 
-class _ArticleDescription extends StatelessWidget {
-  const _ArticleDescription({
-    this.title,
-    this.subtitle,
-    this.author,
-    this.publishDate,
-    this.readDuration,
-  });
-
-  final String title;
-  final String subtitle;
-  final String author;
-  final String publishDate;
-  final String readDuration;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-      Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-
-               Container(
-                 height:40,
-                  child: ARText.title(title),
-
-              ),
-              Container(
-                height:75,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top:8.0),
-                    child: ARText.subtitle(subtitle),
-                  ),
-                ),
-
-              Container(
-                height:15,
-                  child:   ARText.subtitle(author),
-                ),
-
-             Container(
-               height:13,
-                  child: ARText.subtitle('$publishDate - $readDuration'),
-
-              ),
-      ],
-
-        ),
-      ],
-    );
-  }
-}
-
-class CustomListItemTwo extends StatelessWidget {
-  const CustomListItemTwo({
-    this.thumbnail,
-    this.title,
-    this.subtitle,
-    this.author,
-    this.publishDate,
-    this.readDuration,
-  });
-
-  final Widget thumbnail;
-  final String title;
-  final String subtitle;
-  final String author;
-  final String publishDate;
-  final String readDuration;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-        elevation: 10,
-        shadowColor: Colors.black,
-        color: makeAppTheme().primaryColor,
-        child:  Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10.0),
-          child: SizedBox(
-            height: 150,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 3),
-                  child: AspectRatio(
-                    aspectRatio: 1.0,
-                    child: thumbnail,
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(10.0, 0.0, 2.0, 0.0),
-                    child: _ArticleDescription(
-                      title: title,
-                      subtitle: subtitle,
-                      author: author,
-                      publishDate: publishDate,
-                      readDuration: readDuration,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-        )
-    );
-
-
-
-  }
-}
-
-class Home extends StatelessWidget with Post {
+class Home extends StatefulWidget {
   const Home();
 
   @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> with Post {
+  final _controller = HomeController();
+
+  @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              FloatingActionButton(
-                backgroundColor: Colors.lightGreenAccent,
-                onPressed: () {},
-                child: Icon(
-                  Icons.info,
-                  color: Colors.lightBlue,
-                ),
-              ),
-              SizedBox(height: 10,),
-              FloatingActionButton(
-                onPressed:()=>showMyDialog(context),
-                child: Icon(Icons.chat_bubble_outline_outlined),
-              )
-            ],
-          ),
+    _controller.fetchProfile();
+
+    return TPLDefault(
+      children: [
+        MRButton.link("Novidades", () {
+          _controller.gotTo(context);
+        }, w: 90, color: Colors.lightGreenAccent),
+        MRButton.link("Sair", () => _controller.gotTo(context, news: false),
+            w: 50, color: Colors.white)
+      ],
+      childrenColumn: Dump.dumpList(),
+      welcome: [
+        ARText.strong("Bem Vindo!", color: Colors.black87),
+        SizedBox(
+          height: 10,
         ),
-        body: ListView(
-          padding: const EdgeInsets.all(4.0),
-          children: <Widget>[
-            CustomListItemTwo(
-              thumbnail: Container(
-                decoration: const BoxDecoration(color: Colors.pink),
-              ),
-              title: 'Flutter 1.0 Launch',
-              subtitle: 'Flutter continues to improve and expand its horizons. '
-                  'This text should max out at two lines and clip',
-              author: 'Dash',
-              publishDate: 'Dec 28',
-              readDuration: '5 mins',
-            ),
-            CustomListItemTwo(
-              thumbnail: Container(
-                decoration: const BoxDecoration(color: Colors.blue),
-              ),
-              title: 'Flutter 1.2 Release - Continual updates to the framework',
-              subtitle: 'Flutter once again improves and makes updates.',
-              author: 'Flutter',
-              publishDate: 'Feb 26',
-              readDuration: '12 mins',
-            ),
-          ],
+        ValueListenableBuilder<bool>(
+          valueListenable: _controller.hasProfile,
+          builder: (_, enabled, __) => ARText.subtitle(
+              enabled ? _controller.profile.value.name.toUpperCase() : '',
+              color: Colors.black87),
         ),
-      ),
+        SizedBox(
+          height: 38,
+        ),
+      ],
+      myPosts: ValueListenableBuilder<List<OCardWithoutImage>>(
+          valueListenable:_controller.list,
+          builder: (_, enabled, __) => enabled.length >0
+              ? Container(
+                  margin: EdgeInsets.symmetric(vertical: 20.0),
+                  height: 200.0,
+                  width: 500.0,
+                  color: makeAppTheme().primaryColorDark,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _controller.list.value.length,
+                      itemBuilder: (context, index) {
+                        print(index);
+                        return GestureDetector(
+                          onTap: (){
+                            showMyDialog(context, _controller, indice: index);
+                            _controller.setEditText(_controller.list.value[index].content);
+                          },
+                          child: Container(
+                            width: 310.0,
+                            child:_controller.list.value[index]
+                          ),
+                        );
+                      }),
+                )
+              : Container()),
+      mrButton: MRButton.editFLoat(() => showMyDialog(context, _controller)),
     );
   }
 }

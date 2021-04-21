@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/core.dart';
 
-import '../../ui/pages/pages.dart';
+import 'package:gb_app/ui/ui.dart';
 
 class Root extends StatelessWidget {
   final Pages page;
@@ -20,6 +20,9 @@ class Root extends StatelessWidget {
     switch (page) {
       case Pages.LOGIN:
         return Login();
+        break;
+      case Pages.NEWS:
+        return News();
         break;
       case Pages.REGISTER:
         return Register();

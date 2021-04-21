@@ -25,7 +25,6 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
-  splashscreen: ^1.2.0
   flutter_secure_storage: ^4.1.0
   dio: ^4.0.0
   cached_network_image: ^3.0.0

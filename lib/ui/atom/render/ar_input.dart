@@ -12,10 +12,4 @@ class ARInput {
       ABInput.buildAtomInput(hintText, onChanged, maxLines, obscureText,
           keyboardType, maxLength, edtController);
 
-  static Widget inputEmailPassword(String hintText, onChanged(String value),
-          {maxLines = 1,
-          obscureText = false,
-          keyboardType = TextInputType.text}) =>
-      ABInput.buildAtomInputWithouMaxLines(
-          hintText, onChanged, maxLines, obscureText, keyboardType);
 }

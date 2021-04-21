@@ -34,13 +34,7 @@ class OCard extends StatelessWidget {
             Container(
               width: 400.0,
               height: 400.0,
-              child: CachedNetworkImage(
-                imageUrl: profilePicture,
-                placeholder: (context, url) =>
-                    MRHeader.header(context, "logo".png()),
-                errorWidget: (context, url, error) =>
-                    MRHeader.header(context, "logo".png()),
-              ),
+              child: MRImage.cachedImage(profilePicture),
             ),
             ARText.strong(name),
             ARSpace.spaceH20(),

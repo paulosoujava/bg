@@ -9,8 +9,6 @@ class ARText{
      title: data,
        maxLines: 2,
        style:  ABText.buildStyle(color, fontWeight: FontWeight.bold )
-
-
    );
  }
  static Widget subtitle(data, {Color color = Colors.white}){

@@ -1,6 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gb_app/ui/atom/atom.dart';
 import 'package:gb_app/ui/atom/render/ar_text.dart';
+
+import '../../../core/core.dart';
+import '../../ui.dart';
 
 mixin MBImage {
   //MOLECULE
@@ -14,6 +18,15 @@ mixin MBImage {
           ARText.subtitle(text)
         ],
       ),
+    );
+  }
+  static CachedNetworkImage cachedImage(profilePicture){
+    return CachedNetworkImage(
+      imageUrl: profilePicture,
+      placeholder: (context, url) =>
+          MRHeader.header(context, "logo".png()),
+      errorWidget: (context, url, error) =>
+          MRHeader.header(context, "logo".png()),
     );
   }
 
